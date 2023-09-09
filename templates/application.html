@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zip Code Input</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Enter Your Zip Code</h1>
+    
+    <form method="POST" id="myForm">
+        {{ form.hidden_tag() }}
+        {{ form.zipCode.label }} {{ form.zipCode(size=10) }}
+        <input type="text" id="zipCodeInput" placeholder="Enter Zip Code">
+        <button id="submitButton">Submit</button>
+
+    </form>
+
+    <div id="result"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

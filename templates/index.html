@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to My Website</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #111; /* Dark blue background */
+      color: #fff; /* White text */
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #3498db; /* Light blue header */
+      padding: 20px;
+      text-align: center;
+      width: 100%; /* Make the header span the full width */
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      flex-grow: 1; /* Allow content to grow and push footer down */
+    }
+
+    p {
+      font-size: 18px;
+    }
+
+    .btn-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #3498db; /* Light blue button */
+      color: #fff;
+      text-decoration: none;
+      margin: 0 10px; /* Add some space between buttons */
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #333; /* Dark gray footer */
+    }
+
+    img {
+      max-width: 350px; /* Adjust the max-width to your preference */
+      border-radius: 50%; /* Creates a rounded shape for your image */
+      display: block; /* Center the image */
+      margin: 0 auto; /* Center the image horizontally */
+      margin-top: 20px; /* Add margin to center vertically */
+    }
+
+    .github-link {
+      color: #3498db; /* Light blue link color */
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Unlocking Innovation</h1>
+  </header>
+
+  <div class="container">
+    <p>
+      Welcome to my digital portfolio! I invite you to explore my professional journey, accomplishments, and skills showcased on this platform. Within these digital pages, you'll find my meticulously crafted resume, highlighting my qualifications and experiences, as well as sample applications that provide a tangible demonstration of my expertise. As a passionate and dedicated professional, I have always strived for excellence in my work, and this portfolio serves as a window into the depth of my capabilities. Whether you're considering me for a potential opportunity or simply curious to learn more about my career, I hope you find this collection informative and inspiring. Thank you for visiting, and please feel free to reach out with any inquiries or opportunities for collaboration.
+    </p>
+    
+    <div class="btn-container">
+      <a class="btn" href="resume.html">View Resume</a>
+      <a class="btn" href="application.html">Sample Application</a>
+    </div>
+    
+   <img src="{{ url_for('static', filename='images/selfie') }}" alt="Selfie">
+
+  </div>
+  
+  <footer>
+    <a class="github-link" href="https://github.com/your-username">View Source Code on GitHub</a>
+  </footer>
+</body>
+</html>
