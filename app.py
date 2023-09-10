@@ -35,22 +35,16 @@ def get_csrf_token():
     if csrf_token:
         return jsonify({'csrf_token': csrf_token})
     else:
-        return jsonify({'error': 'CSRF token not found'})
+        return jsonify({'error': 'CSRF token not found'})      
 
-@app.route('/http://localhost:5000', methods=['POST'])
+@app.route('/', methods=['POST'])
 def process_zip():
-    try:
-        data = request.get_json()
-        zip_code = data.get('zipCode')
-
-        # Add your processing logic here
-    
-        
-        result = f"You entered the zip code: {zip_code}"
-
-        return jsonify({'result': result})
-    except Exception as e:
-        return jsonify({'error': str(e)})
+   if request.method == 'POST':
+        # Process the zip code data here
+        zip_code = request.form.get('zipCode')
+        # Perform some logic or return a response
+        result = {"result": "Processed data for zip code: " + zip_code}
+        return jsonify(result)
 
 if __name__ == '__main__':
     app.run(debug=True)

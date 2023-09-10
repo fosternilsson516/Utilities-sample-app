@@ -4,16 +4,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const submitButton = document.getElementById("submitButton");
     const resultDiv = document.getElementById("result");
 
-    submitButton.addEventListener("click", function (e) {
-        e.preventDefault(); // Prevent the default form submission behavior
+    submitButton.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent the default form submission behavior
 
-        const zipCode = zipCodeInput.value;
+        var zipCode = zipCodeInput.value;
+        var csrfTokenInput = document.querySelector('input[name="csrf_token"]').value;
         if (zipCode.length === 5 && /^\d+$/.test(zipCode)) {
             // Valid zip code format
 
-            const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+            
             const formData = new FormData();
-            formData.append("csrf_token", csrfTokenInput.value); // Include the CSRF token
+            formData.append("csrf_token", csrfTokenInput); // Include the CSRF token
             formData.append("zipCode", zipCode);
 
             sendZipCode(formData);
@@ -23,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function sendZipCode(formData) {
-        axios.post("http://localhost:5000", formData)
+        axios.post("/", formData)
             .then(function (response) {
                 resultDiv.innerHTML = "Result: " + response.data.result;
             })

@@ -11,7 +11,7 @@
     
     <form method="POST" id="myForm">
         {{ form.hidden_tag() }}
-        {{ form.zipCode.label }} {{ form.zipCode(size=10) }}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="text" id="zipCodeInput" placeholder="Enter Zip Code">
         <button id="submitButton">Submit</button>
 
@@ -19,6 +19,6 @@
 
     <div id="result"></div>
 
-    <script src="script.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
