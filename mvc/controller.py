@@ -1,8 +1,8 @@
 # controller.py
 from flask import request, jsonify
-from app import app
-from app.model import ZipCodeModel
-from app.view import render_application
+from myapp import app
+from mvc.model import ZipCodeModel
+from mvc.view import render_application, render_resume, ZipCodeForm, render_index
 
 @app.route('/')
 def index():
