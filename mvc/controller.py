@@ -31,3 +31,8 @@ def post_zip():
         zip_code = request.form.get('zipCode')
         result = ZipCodeModel.process_zip(zip_code)
         return jsonify(result)
+
+@app.route('/selected_appliances', methods=['POST'])
+def selected_appliances():
+    selected_appliances = request.form.getlist('appliances[]')
+    return render_template('selected_appliances.html', selected_appliances=selected_appliances)

@@ -14,3 +14,6 @@ def render_resume():
 
 def render_application(form):
     return render_template('application.html', form=form)
+
+def render_selected_appliances():
+    return render_template('selected_appliances.html')    
