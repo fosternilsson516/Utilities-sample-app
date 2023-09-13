@@ -1,10 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Fetch the CSRF token from the hidden input field
     const form = document.getElementById("myForm");
+    //const appliancesForm = document.getElementById("appliancesForm");
     const resultDiv = document.getElementById("result");
-    //const zipCodeInput = document.getElementById("zipCodeInput");
-    //const submitButton = document.getElementById("submitButton");
-    //const resultDiv = document.getElementById("result");
+    //const processingResultsDiv = document.getElementById("processingResults");
 
     form.addEventListener("submit", function (event) {
         event.preventDefault(); // Prevent the default form submission behavior
@@ -19,10 +18,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         var csrfTokenInput = document.querySelector('input[name="csrf_token"]').value;
-        if (zipCode.length === 5 && /^\d+$/.test(zipCode)) {
-            // Valid zip code format
 
-            resultDiv.innerHTML = "Processing..."; // Display a loading message
+
+        if (zipCode.length === 5 && /^\d+$/.test(zipCode)) {
+            resultDiv.innerHTML = "Processing...";
 
             const formData = new FormData();
             formData.append("csrf_token", csrfTokenInput); // Include the CSRF token
@@ -36,9 +35,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function sendZipCode(formData) {
-        axios.post("/selected_appliances", formData)
+        axios.post("/application.html", formData)
             .then(function (response) {
                 resultDiv.innerHTML = "Result: " + response.data.result;
+                processingResultsDiv.innerHTML = "Selected Appliances: " + response.data.appliances.join(", ");
             })
             .catch(function (error) {
                 resultDiv.innerHTML = "Error processing the data.";

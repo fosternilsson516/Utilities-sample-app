@@ -1,4 +1,4 @@
-# app.py
+# myapp.py
 from flask import Flask
 from flask_wtf.csrf import CSRFProtect
 from flask_wtf import FlaskForm

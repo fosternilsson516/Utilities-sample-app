@@ -12,8 +12,5 @@ def render_index():
 def render_resume():
     return render_template('resume.html')
 
-def render_application(form):
+def render_application(form, selected_appliances):
     return render_template('application.html', form=form)
-
-def render_selected_appliances():
-    return render_template('selected_appliances.html')    
