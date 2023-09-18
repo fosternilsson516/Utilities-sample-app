@@ -1,9 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Fetch the CSRF token from the hidden input field
     const form = document.getElementById("myForm");
-    //const appliancesForm = document.getElementById("appliancesForm");
     const resultDiv = document.getElementById("result");
-    //const processingResultsDiv = document.getElementById("processingResults");
+    const selectedAppliancesDiv = document.getElementById("selectedAppliances");
 
     form.addEventListener("submit", function (event) {
         event.preventDefault(); // Prevent the default form submission behavior
@@ -26,7 +25,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const formData = new FormData();
             formData.append("csrf_token", csrfTokenInput); // Include the CSRF token
             formData.append("zipCode", zipCode);
-            formData.append("appliances", JSON.stringify(appliances)); // Convert appliances to JSON
+            appliances.forEach((appliance, index) => {
+                formData.append(`appliance${index}`, appliance);
+            });
 
             sendZipCode(formData);
         } else {
@@ -35,13 +36,35 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function sendZipCode(formData) {
-        axios.post("/application.html", formData)
+        axios.post("/index.html", formData)
             .then(function (response) {
+                console.log(response.data); // Log the entire response data
                 resultDiv.innerHTML = "Result: " + response.data.result;
-                processingResultsDiv.innerHTML = "Selected Appliances: " + response.data.appliances.join(", ");
+                
+                // Check if processingResultsDiv exists before setting innerHTML
+                if (selectedAppliancesDiv) {
+                    if (response.data.appliances) {
+                        selectedAppliancesDiv.innerHTML = "Selected Appliances: " + response.data.appliances.join(", ");
+                    } else {
+                        selectedAppliancesDiv.innerHTML = "No appliances selected.";
+                    }
+                }
             })
             .catch(function (error) {
-                resultDiv.innerHTML = "Error processing the data.";
+                if (error.response) {
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                    resultDiv.innerHTML = "Server Error: " + error.response.status + " - " + error.response.statusText;
+                    console.error("Server Error:", error.response.data);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    resultDiv.innerHTML = "No response received from the server.";
+                    console.error("No response received:", error.request);
+                } else {
+                    // Something happened in setting up the request that triggered an error
+                    resultDiv.innerHTML = "Request Error: " + error.message;
+                    console.error("Request Error:", error.message);
+                }
             });
     }
-});
+})    

@@ -1,15 +1,13 @@
 from flask import request, jsonify
 from myapp import app
 from mvc.model import ZipCodeModel
-from mvc.view import render_application, render_resume, ZipCodeForm, render_index
+from mvc.view import ZipCodeForm, render_index, render_template
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_index()
-
-@app.route('/resume.html')
-def resume():
-    return render_resume()
+    form = ZipCodeForm()
+    appliances = []
+    return render_index(form, appliances)
 
 @app.route('/get-csrf-token')
 def get_csrf_token():
@@ -19,18 +17,22 @@ def get_csrf_token():
     else:
         return jsonify({'error': 'CSRF token not found'})    
 
-@app.route('/application.html', methods=['GET', 'POST'])
-def application():
-    form = ZipCodeForm()
-    selected_appliances = []
-    return render_application(form, selected_appliances)
+@app.route('/submit', methods=['POST'])
+def submit():
+    zip_code = request.form.get('zipCodeInput')
+    selected_appliances = request.form.getlist('appliances[]')
 
-@app.route('/', methods=['POST'])
-def post_zip():
-    if request.method == 'POST':
-        zip_code = request.form.get('zipCode')
-        selected_appliances = request.form.getlist('appliances[]')
-        result = ZipCodeModel.process_zip(zip_code)
-        return jsonify(result)
+    # Process the zip code and selected appliances here
 
+    # Redirect to the result page and pass the input data as parameters
+    return redirect(url_for('result', zip_code=zip_code, selected_appliances=selected_appliances))
 
+@app.route('/result')
+def result():
+    zip_code = request.args.get('zip_code')
+    selected_appliances = request.args.getlist('selected_appliances')
+    return render_template('result.html', zip_code=zip_code, selected_appliances=selected_appliances)
+    # Process the zip code and selected appliances here
+
+    # Redirect to the result page and pass the input data as parameters
+    return redirect(url_for('result', zip_code=zip_code, selected_appliances=selected_appliances))
