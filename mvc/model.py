@@ -1,22 +1,21 @@
 class ZipCodeModel:
-    def __init__(self):
-        self.zip_code = None
-        self.selected_appliances = []
-
-    def set_zip_code(self, zip_code):
-        self.zip_code = zip_code
-
-    def add_appliance(self, appliance):
-        self.selected_appliances.append(appliance)
-
-    def get_zip_code(self):
-        return self.zip_code
-
-    def get_selected_appliances(self):
-        return self.selected_appliances
-    
     @staticmethod
-    def process_appliances(selected_appliances):
+    def process_data(zip_code, selected_appliances):
+        print("Received zip_code:", zip_code)
+        print("Received selected_appliances:", selected_appliances)
+    # Your processing logic here
+        result = "Processed data for zip code: " + zip_code
+        appliances = selected_appliances
+        return {"result": result, "appliances": appliances}
+    #@staticmethod
+    #def process_zip(zip_code):
+    # Simulate processing logic for the zip code
+    #    result = "Processed data for zip code: " + zip_code
+    #    print("Result:", result)  # Add this line for debugging
+    #    return {"result": result}
+    
+    #@staticmethod
+   # def process_appliances(selected_appliances):
         # Simulate processing logic for selected appliances
-        appliance_list = ", ".join(selected_appliances)
-        return {"result": "Processed selected appliances: " + appliance_list}
+    #    appliance_list = ", ".join(selected_appliances)
+    #    return {"result": "Processed selected appliances: " + appliance_list}

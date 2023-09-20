@@ -3,6 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("myForm");
     const resultDiv = document.getElementById("result");
     const selectedAppliancesDiv = document.getElementById("selectedAppliances");
+    
+
+    console.log("Form element:", form);
 
     form.addEventListener("submit", function (event) {
         event.preventDefault(); // Prevent the default form submission behavior
@@ -10,61 +13,51 @@ document.addEventListener("DOMContentLoaded", function () {
         const zipCodeInput = document.getElementById("zipCodeInput");
         const zipCode = zipCodeInput.value;
 
+        console.log(zipCodeInput);
+        console.log(zipCode);
+
         const appliances = [];
         const applianceCheckboxes = document.querySelectorAll('input[name="appliances[]"]:checked');
         applianceCheckboxes.forEach(function (checkbox) {
             appliances.push(checkbox.value);
         });
+        console.log("Selected Appliances:", appliances);
+        const csrfTokenInput = document.querySelector('input[name="csrf_token"]').value;
 
-        var csrfTokenInput = document.querySelector('input[name="csrf_token"]').value;
+        const formData = new FormData();
+        formData.append("csrf_token", csrfTokenInput);
+        formData.append("zipCode", zipCode);
+        appliances.forEach((appliance, index) => {
+            formData.append(`appliance${index}`, appliance);
+        });
 
-
-        if (zipCode.length === 5 && /^\d+$/.test(zipCode)) {
-            resultDiv.innerHTML = "Processing...";
-
-            const formData = new FormData();
-            formData.append("csrf_token", csrfTokenInput); // Include the CSRF token
-            formData.append("zipCode", zipCode);
-            appliances.forEach((appliance, index) => {
-                formData.append(`appliance${index}`, appliance);
-            });
-
-            sendZipCode(formData);
-        } else {
-            resultDiv.innerHTML = "Please enter a valid 5-digit zip code.";
-        }
+        // Send the data to the server using an HTTP POST request (e.g., with Axios)
+        sendZipCode(formData);
     });
 
     function sendZipCode(formData) {
-        axios.post("/index.html", formData)
+        axios.post("/submit", formData)
             .then(function (response) {
-                console.log(response.data); // Log the entire response data
-                resultDiv.innerHTML = "Result: " + response.data.result;
-                
-                // Check if processingResultsDiv exists before setting innerHTML
-                if (selectedAppliancesDiv) {
-                    if (response.data.appliances) {
-                        selectedAppliancesDiv.innerHTML = "Selected Appliances: " + response.data.appliances.join(", ");
-                    } else {
-                        selectedAppliancesDiv.innerHTML = "No appliances selected.";
-                    }
+                // Handle the response from the server
+                console.log(response)
+                if (response.data.result) {
+                    resultDiv.innerHTML = "Result: " + response.data.result;
+                } else {
+                    resultDiv.innerHTML = "No result available.";
                 }
+
+                // Check if selected appliances data is available
+                if (response.data.appliances) {
+                    selectedAppliancesDiv.innerHTML = "Selected Appliances: " + response.data.appliances.join(", ");
+                } else {
+                    selectedAppliancesDiv.innerHTML = "No appliances selected.";
+                }
+                window.location.href = "/result";
             })
             .catch(function (error) {
-                if (error.response) {
-                    // The request was made and the server responded with a status code
-                    // that falls out of the range of 2xx
-                    resultDiv.innerHTML = "Server Error: " + error.response.status + " - " + error.response.statusText;
-                    console.error("Server Error:", error.response.data);
-                } else if (error.request) {
-                    // The request was made but no response was received
-                    resultDiv.innerHTML = "No response received from the server.";
-                    console.error("No response received:", error.request);
-                } else {
-                    // Something happened in setting up the request that triggered an error
-                    resultDiv.innerHTML = "Request Error: " + error.message;
-                    console.error("Request Error:", error.message);
-                }
+                // Handle errors
+                resultDiv.innerHTML = "An error occurred while processing the request.";
+                selectedAppliancesDiv.innerHTML = "No appliances selected.";
             });
     }
-})    
+});

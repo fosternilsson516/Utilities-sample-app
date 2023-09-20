@@ -56,7 +56,7 @@
     <div class="container">
         <h1>Enter Your Zip Code</h1>
         
-        <form action="/submit" method="POST">
+        <form id="myForm" action="/submit" method="POST">
             {{ form.hidden_tag() }}
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <input type="text" id="zipCodeInput" placeholder="Enter Zip Code">
@@ -70,6 +70,9 @@
                 <label><input type="checkbox" name="appliances[]" value="Pool Pump"> Pool Pump</label>
                 <button type="submit" id="submitButton">Submit</button>
         </form>
+        <div id="result">{{ result }}</div>
+        <div id="selectedAppliances">{{ appliances }}</div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    
 </body>
 </html>
