@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Fetch the CSRF token from the hidden input field
     const form = document.getElementById("myForm");
-    const resultDiv = document.getElementById("result");
+    const zipCodeDiv = document.getElementById("zipCode");
     const selectedAppliancesDiv = document.getElementById("selectedAppliances");
     
 
@@ -25,38 +25,40 @@ document.addEventListener("DOMContentLoaded", function () {
         const csrfTokenInput = document.querySelector('input[name="csrf_token"]').value;
 
         const formData = new FormData();
+        console.log(formData)
         formData.append("csrf_token", csrfTokenInput);
         formData.append("zipCode", zipCode);
-        appliances.forEach((appliance, index) => {
-            formData.append(`appliance${index}`, appliance);
+        appliances.forEach((appliance) => {
+            formData.append("appliances[]", appliance);
         });
-
+        console.log("Selected Appliances:", appliances);
         // Send the data to the server using an HTTP POST request (e.g., with Axios)
         sendZipCode(formData);
+        console.log("Selected Appliances:", appliances);
     });
 
     function sendZipCode(formData) {
         axios.post("/submit", formData)
-            .then(function (response) {
-                // Handle the response from the server
-                console.log(response)
-                if (response.data.result) {
-                    resultDiv.innerHTML = "Result: " + response.data.result;
-                } else {
-                    resultDiv.innerHTML = "No result available.";
-                }
+        .then(function (response) {
+            const data = response.data;
+            
+            // Handle the response data
+            if (data.zipCode) {
+                zipCodeDiv.innerHTML = "zip code: " + data.zipCode;
+            } else {
+                zipCodeDiv.innerHTML = "No result available.";
+            }
 
-                // Check if selected appliances data is available
-                if (response.data.appliances) {
-                    selectedAppliancesDiv.innerHTML = "Selected Appliances: " + response.data.appliances.join(", ");
-                } else {
-                    selectedAppliancesDiv.innerHTML = "No appliances selected.";
-                }
-                window.location.href = "/result";
-            })
+            // Check if selected appliances data is available
+            if (data.appliances && data.appliances.length > 0) {
+                selectedAppliancesDiv.innerHTML = "Selected Appliances: " + data.appliances.join(", ");
+            } else {
+                selectedAppliancesDiv.innerHTML = "No appliances selected.";
+            }
+        })
             .catch(function (error) {
                 // Handle errors
-                resultDiv.innerHTML = "An error occurred while processing the request.";
+                zipCodeDiv.innerHTML = "An error occurred while processing the request.";
                 selectedAppliancesDiv.innerHTML = "No appliances selected.";
             });
     }
