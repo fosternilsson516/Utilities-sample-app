@@ -1,4 +1,4 @@
-from flask import request, jsonify, redirect, url_for
+from flask import request, jsonify, redirect, url_for, session, Flask
 from myapp import app
 from mvc.model import ZipCodeModel
 from mvc.view import ZipCodeForm, render_template, render_index, render_result
@@ -21,26 +21,28 @@ def submit():
     zip_code = request.form.get('zipCode')
     selected_appliances = request.form.getlist('appliances[]')
 
-    # Return a JSON response with the result and selected appliances
+    # Process the form data and prepare the result_data
     result_data = {
         'zipCode': zip_code,
         'appliances': selected_appliances,
         # Add other data you want to include in the response
     }
-    return jsonify(result_data)
-    
-        
 
-@app.route('/result', methods=['POST'])
+    # Save result_data in the session
+    session['result_data'] = result_data
+
+    # Redirect to the /result route
+    return jsonify({'redirect': url_for('result', _external=True)})
+
+@app.route('/result', methods=['GET','POST'])  # Use GET method for rendering result
 def result():
-    zip_code = request.args.get('zipCode')
-    selected_appliances = request.args.getlist('appliances[]')
+    # Retrieve result_data from the session
+    result_data = session.get('result_data')
 
-    zip_code_data = ZipCodeModel.zip_code_data(zip_code)
-    selected_appliances_data = ZipCodeModel.selected_appliances_data(selected_appliances)
+    # Ensure result_data exists in the session
+    if result_data is None:
+        return 'Result data not found.'
 
-    return render_template('result.html', zip_code=zip_code_data, selected_appliances=selected_appliances_data)
+    # Render the template with result_data
+    return render_template('result.html', result_data=result_data)
     
-
-    # Redirect to the result page and pass the input data as parameters
-    #return redirect(url_for('result', zip_code=zip_code, selected_appliances=selected_appliances))

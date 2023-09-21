@@ -1,11 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Fetch the CSRF token from the hidden input field
     const form = document.getElementById("myForm");
-    const zipCodeDiv = document.getElementById("zipCode");
-    const selectedAppliancesDiv = document.getElementById("selectedAppliances");
+    //const zipCodeDiv = document.getElementById("zipCode");
+    //const selectedAppliancesDiv = document.getElementById("selectedAppliances");
     
-
-    console.log("Form element:", form);
 
     form.addEventListener("submit", function (event) {
         event.preventDefault(); // Prevent the default form submission behavior
@@ -34,32 +32,46 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Selected Appliances:", appliances);
         // Send the data to the server using an HTTP POST request (e.g., with Axios)
         sendZipCode(formData);
-        console.log("Selected Appliances:", appliances);
     });
 
     function sendZipCode(formData) {
         axios.post("/submit", formData)
         .then(function (response) {
             const data = response.data;
-            
-            // Handle the response data
-            if (data.zipCode) {
-                zipCodeDiv.innerHTML = "zip code: " + data.zipCode;
-            } else {
-                zipCodeDiv.innerHTML = "No result available.";
-            }
 
-            // Check if selected appliances data is available
-            if (data.appliances && data.appliances.length > 0) {
-                selectedAppliancesDiv.innerHTML = "Selected Appliances: " + data.appliances.join(", ");
+            if (data.redirect) {
+                // Redirect to the /result route
+                window.location.href = data.redirect;
             } else {
-                selectedAppliancesDiv.innerHTML = "No appliances selected.";
+                // Handle other data or errors
+                console.error("Unexpected response:", data);
             }
         })
-            .catch(function (error) {
+        .catch(function (error) {
+            // Handle errors
+            console.error("An error occurred:", error);
+        });
+    
+            
+            // Handle the response data
+           // if (data.zipCode) {
+           //     zipCodeDiv.innerHTML = "zip code: " + data.zipCode;
+           // } else {
+            //    zipCodeDiv.innerHTML = "No result available.";
+          //  }
+
+            // Check if selected appliances data is available
+           // if (data.appliances && data.appliances.length > 0) {
+           //     selectedAppliancesDiv.innerHTML = "Selected Appliances: " + data.appliances.join(", ");
+           // } else {
+          //      selectedAppliancesDiv.innerHTML = "No appliances selected.";
+          //  }
+
+       // })
+         //   .catch(function (error) {
                 // Handle errors
-                zipCodeDiv.innerHTML = "An error occurred while processing the request.";
-                selectedAppliancesDiv.innerHTML = "No appliances selected.";
-            });
+          //      zipCodeDiv.innerHTML = "An error occurred while processing the request.";
+         //       selectedAppliancesDiv.innerHTML = "No appliances selected.";
+         //   });
     }
 });
